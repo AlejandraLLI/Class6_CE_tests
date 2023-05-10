@@ -40,9 +40,22 @@ def model():
     yield model
 
 
-#def test_data_shape(iris_data):
+@pytest.fixture(scope='module')
+def test_data_shape(iris_data):
+    X, y = iris_data
+    assert X.shape == (150,4)
+    assert Y.shape == (150)
 
-#def test_model_accuracy(model, split_data):
+
+def test_model_accuracy(model, split_data):
+    X_train, X_test, y_train, y_test = split_data
+    y_test_ohe = to_categorical(y_test)
+
+    y_train_ohe = to_categorical(y_train)
+    model.fit(X_train, y_train_ohe, epochs = 10, batch_size = 5, verbose = 0)
+              
+    loss, accuracy = model.evaluate(X_test, y_test_ohe, verbose = 0)
+    assert accuracy >= 0.6
 
 #def test_data_leakage(model, iris_data, split_data):
 
